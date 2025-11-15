@@ -52,34 +52,35 @@
     </a>
 </p>
 
-<form method="get" action="{% url 'reservation_list' %}"
-    style="margin-bottom:1rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
+<form method="get" action="">
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: nowrap;">
 
-    <!-- Recherche texte -->
-    <input type="text" name="q" value="{{ q|default:'' }}"
-        placeholder="Rechercher (nom, téléphone, email, commentaire, date, heure)" style="width: 500px;" />
+        <!-- Barre de recherche large -->
+        <input type="text" name="q" value="{{ q|default:'' }}"
+            placeholder="Rechercher (nom, téléphone, email, commentaire, date, heure)"
+            style="flex: 1 1 auto; min-width: 400px;">
 
+        <!-- Filtres dates -->
+        <input type="date" name="date_start" value="{{ date_start|default:'' }}">
+        <input type="date" name="date_end" value="{{ date_end|default:'' }}">
 
+        <!-- Filtres min / max personnes -->
+        <input type="number" name="min_p" min="1" value="{{ min_p|default:'' }}" placeholder="Min pers.">
+        <input type="number" name="max_p" min="1" value="{{ max_p|default:'' }}" placeholder="Max pers.">
 
+        <!-- Bouton rechercher -->
+        <button type="submit">
+            Rechercher
+        </button>
 
-    <!-- Filtres avancés -->
-    <input type="date" name="date_start" value="{{ date_start|default:'' }}" />
-    <input type="date" name="date_end" value="{{ date_end|default:'' }}" />
-    <input type="number" name="min_p" min="1" value="{{ min_p|default:'' }}" placeholder="Min pers."
-        style="width:7rem" />
-    <input type="number" name="max_p" min="1" value="{{ max_p|default:'' }}" placeholder="Max pers."
-        style="width:7rem" />
+        <!-- Lien réinitialiser -->
+        <a href="{% url 'reservation_list' %}" style="margin-left: 4px;">
+            Réinitialiser
+        </a>
 
-    <!-- Conserver le tri courant -->
-    <input type="hidden" name="sort" value="{{ sort }}" />
-    <input type="hidden" name="dir" value="{{ dir }}" />
-
-    <button type="submit" style="padding:.5rem 1rem;">Rechercher</button>
-
-    {% if q or date_start or date_end or min_p or max_p %}
-    <a href="{% url 'reservation_list' %}">Réinitialiser</a>
-    {% endif %}
+    </div>
 </form>
+
 
 
 {% if messages %}

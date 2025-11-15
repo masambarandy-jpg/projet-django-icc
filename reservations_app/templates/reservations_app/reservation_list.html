@@ -56,8 +56,11 @@
     style="margin-bottom:1rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
 
     <!-- Recherche texte -->
-    <input type="text" name="q" placeholder="Rechercher (nom, téléphone, email, commentaire, date, heure)"
-        value="{{ q|default:'' }}" style="flex:1; padding:.5rem;" />
+    <input type="text" name="q" value="{{ q|default:'' }}"
+        placeholder="Rechercher (nom, téléphone, email, commentaire, date, heure)" style="width: 500px;" />
+
+
+
 
     <!-- Filtres avancés -->
     <input type="date" name="date_start" value="{{ date_start|default:'' }}" />

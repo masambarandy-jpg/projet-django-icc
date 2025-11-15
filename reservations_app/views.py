@@ -5,12 +5,6 @@ from django.db.models import Q
 
 from .models import Reservation
 from .forms import ReservationForm
-
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.db.models import Q
-from django.core.paginator import Paginator
 # … tes autres imports
 
 def reservation_list(request):
@@ -86,7 +80,7 @@ def reservation_create(request):
         form = ReservationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Réservation créée avec succès ✅")
+            messages.success(request, "Réservation créée avec succès.")  # tu peux remettre l'emoji si tu veux
             # Redirige vers next si présent
             return redirect(next_url or "reservation_list")
     else:
@@ -99,7 +93,6 @@ def reservation_create(request):
     )
 
 
-
 def reservation_update(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
     next_url = request.GET.get("next") or request.POST.get("next") or ""
@@ -108,7 +101,7 @@ def reservation_update(request, pk):
         form = ReservationForm(request.POST, instance=reservation)
         if form.is_valid():
             form.save()
-            messages.success(request, "Réservation mise à jour ✅")
+            messages.success(request, "Réservation modifiée avec succès.")
             return redirect(next_url or "reservation_list")
     else:
         form = ReservationForm(instance=reservation)
@@ -120,14 +113,13 @@ def reservation_update(request, pk):
     )
 
 
-
 def reservation_delete(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
     next_url = request.GET.get("next") or request.POST.get("next") or ""
 
     if request.method == "POST":
         reservation.delete()
-        messages.success(request, "Réservation supprimée ✅")
+        messages.success(request, "Réservation supprimée avec succès.")
         return redirect(next_url or "reservation_list")
 
     return render(
@@ -135,4 +127,3 @@ def reservation_delete(request, pk):
         "reservations_app/confirm_delete.html",
         {"reservation": reservation, "next": next_url},
     )
-

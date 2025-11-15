@@ -59,11 +59,26 @@
 
     <form method="post">
         {% csrf_token %}
+
+        {# Champ caché pour conserver la prochaine URL #}
         <input type="hidden" name="next" value="{{ next }}">
+
         {{ form.as_p }}
-        <button type="submit">Enregistrer</button>
-        <a href="{% url 'reservation_list' %}">Annuler</a>
+
+        <button type="submit" class="btn btn-primary">
+            {% if mode == "create" %}
+            Créer la réservation
+            {% else %}
+            Enregistrer les modifications
+            {% endif %}
+        </button>
+
+        {# Bouton Annuler : retourne à la bonne page #}
+        <a href="{% if next %}{{ next }}{% else %}{% url 'reservation_list' %}{% endif %}" class="btn btn-secondary">
+            Annuler
+        </a>
     </form>
+
 </body>
 
 </html>

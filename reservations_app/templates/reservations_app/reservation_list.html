@@ -155,26 +155,28 @@
         </tr>
     </thead>
     <tbody>
+        {% if page_obj %}
         {% for r in page_obj %}
         <tr>
-            <td>{{ r.date_reservation }}</td>
-            <td>{{ r.heure_reservation|time:"H:i" }}</td>
-            <td>{{ r.nom_client }}</td>
+            <td>{{ r.date }}</td>
+            <td>{{ r.heure }}</td>
+            <td>{{ r.client }}</td>
             <td>{{ r.nombre_personnes }}</td>
             <td>{{ r.telephone }}</td>
             <td style="text-align:center;">
-                <a href="{% url 'reservation_update' r.pk %}?next={{ request.get_full_path|urlencode }}"
-                    class="btn-action">Modifier</a>
-                <a href="{% url 'reservation_delete' r.pk %}?next={{ request.get_full_path|urlencode }}"
-                    class="btn-action btn-danger">Supprimer</a>
+                <a href="{% url 'reservation_update' r.pk %}" class="btn-action">Modifier</a>
+                <a href="{% url 'reservation_delete' r.pk %}" class="btn-action btn-danger">Supprimer</a>
             </td>
-
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6">Aucune réservation.</td>
         </tr>
         {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="6" style="text-align:center; font-style: italic; padding: 1rem;">
+                Aucune réservation trouvée pour ces critères.
+            </td>
+        </tr>
+        {% endif %}
+
     </tbody>
 </table>
 

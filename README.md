@@ -1,10 +1,10 @@
 # PID Reservations Django
 
-Projet Django réalisé dans le cadre du cours à l'ICC (Institut des Carrières Commerciales) à Bruxelles.
+Projet Django réalisé dans le cadre du cours à l’ICC (Institut des Carrières Commerciales) à Bruxelles.
 
 ## 🎯 Fonctionnalités
 
-- Gestion complète des réservations :
+- Gestion des réservations :
   - Création
   - Modification
   - Suppression
@@ -13,12 +13,13 @@ Projet Django réalisé dans le cadre du cours à l'ICC (Institut des Carrières
   - Filtres (dates, nombre de personnes)
   - Pagination
   - Tri
-- Interface basée sur les templates Django (Bootstrap)
-- Code structuré dans une application Django dédiée : `reservations_app`
+- Interface avec templates Django (Bootstrap)
+
+---
 
 ## 🚀 Installation
 
-1. **Cloner le projet :**
+### 1. Cloner le projet
 
 ```bash
 git clone git@github.com:masambarandy-jpg/projet-django-icc.git

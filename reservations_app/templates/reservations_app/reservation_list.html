@@ -127,22 +127,31 @@
         <tr>
             <th>
                 <a
-                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=date&dir={% if sort == 'date' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-                    Date {% if sort == 'date' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                    href="?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort=date&dir={% if sort == 'date' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    Date
+                    {% if sort == 'date' %}
+                    {% if dir == 'asc' %}▲{% else %}▼{% endif %}
+                    {% else %}
+                    ▵
+                    {% endif %}
+
                 </a>
             </th>
+
             <th>
                 <a
-                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=heure&dir={% if sort == 'heure' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    href="?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort=heure&dir={% if sort == 'heure' and dir == 'asc' %}desc{% else %}asc{% endif %}">
                     Heure {% if sort == 'heure' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
+
             <th>
                 <a
-                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=client&dir={% if sort == 'client' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-                    Client {% if sort == 'client' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                    href="?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort=nom&dir={% if sort == 'nom' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    Client {% if sort == 'nom' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
+
             <th>
                 <a
                     href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=personnes&dir={% if sort == 'personnes' and dir == 'asc' %}desc{% else %}asc{% endif %}">
@@ -159,29 +168,46 @@
         </tr>
     </thead>
     <tbody>
-        {% if page_obj %}
         {% for r in page_obj %}
         <tr>
-            <td>{{ r.date }}</td>
-            <td>{{ r.heure }}</td>
-            <td>{{ r.client }}</td>
+            <!-- Date : format Nov. 3, 2025 -->
+            <td>{{ r.date_reservation|date:"M. j, Y" }}</td>
+
+            <!-- Heure : format 24h 19:00, 14:20, etc. -->
+            <td>{{ r.heure_reservation|time:"H:i" }}</td>
+
+            <!-- Client -->
+            <td>{{ r.nom_client }}</td>
+
+            <!-- Personnes -->
             <td>{{ r.nombre_personnes }}</td>
+
+            <!-- Téléphone -->
             <td>{{ r.telephone }}</td>
+
+            <!-- Actions (avec conservation des filtres) -->
             <td style="text-align:center;">
-                <a href="{% url 'reservation_update' r.pk %}" class="btn-action">Modifier</a>
-                <a href="{% url 'reservation_delete' r.pk %}" class="btn-action btn-danger">Supprimer</a>
+                <a href="{% url 'reservation_update' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
+                    class="btn-action">
+                    Modifier
+                </a>
+                <a href="{% url 'reservation_delete' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
+                    class="btn-action btn-danger">
+                    Supprimer
+                </a>
             </td>
         </tr>
-        {% endfor %}
-        {% else %}
+        {% empty %}
         <tr>
-            <td colspan="6" style="text-align:center; font-style: italic; padding: 1rem;">
+            <td colspan="6" style="text-align:center;">
                 Aucune réservation trouvée pour ces critères.
             </td>
         </tr>
-        {% endif %}
-
+        {% endfor %}
     </tbody>
+
+
+
 </table>
 
 <nav style="margin-top:1rem; display:flex; gap:.5rem; align-items:center;">

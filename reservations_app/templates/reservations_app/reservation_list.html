@@ -47,7 +47,10 @@
 
 <h1>Réservations</h1>
 
-<p><a href="{% url 'reservation_create' %}">+ Nouvelle réservation</a></p>
+<p><a href="{% url 'reservation_create' %}?next={{ request.get_full_path|urlencode }}">
+        + Nouvelle réservation
+    </a>
+</p>
 
 <form method="get" action="{% url 'reservation_list' %}"
     style="margin-bottom:1rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
@@ -160,8 +163,10 @@
             <td>{{ r.nombre_personnes }}</td>
             <td>{{ r.telephone }}</td>
             <td style="text-align:center;">
-                <a href="{% url 'reservation_update' r.pk %}" class="btn-action">Modifier</a>
-                <a href="{% url 'reservation_delete' r.pk %}" class="btn-action btn-danger">Supprimer</a>
+                <a href="{% url 'reservation_update' r.pk %}?next={{ request.get_full_path|urlencode }}"
+                    class="btn-action">Modifier</a>
+                <a href="{% url 'reservation_delete' r.pk %}?next={{ request.get_full_path|urlencode }}"
+                    class="btn-action btn-danger">Supprimer</a>
             </td>
 
         </tr>

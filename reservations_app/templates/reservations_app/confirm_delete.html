@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+{% if messages %}
+<div
+    style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:.6rem;border-radius:.5rem;margin-bottom:1rem">
+    {% for m in messages %}{{ m }}{% endfor %}
+</div>
+{% endif %}
+
+
+<head>
+    <meta charset="utf-8" />
+    <title>Supprimer la réservation</title>
+    <style>
+        body {
+            font-family: system-ui, Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        .danger {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #f6f6f6;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: #fff;
+            border-color: #b91c1c;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Supprimer la réservation</h1>
+    <div class="danger">
+        <p>Confirmer la suppression de la réservation de <strong>{{ reservation.nom_client }}</strong>
+            du <strong>{{ reservation.date_reservation }}</strong> à <strong>{{ reservation.heure_reservation|time:"H:i"
+                }}</strong> ?</p>
+    </div>
+
+    <form method="post" class="actions">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <button class="btn btn-danger" type="submit">Oui, supprimer</button>
+        <a class="btn" href="{% url 'reservation_list' %}">Annuler</a>
+    </form>
+</body>
+
+</html>

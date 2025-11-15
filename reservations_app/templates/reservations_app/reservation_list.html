@@ -1,17 +1,80 @@
+{% extends "reservations_app/base.html" %}
 {% load static %}
+
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        /* tous les titres + colonnes bien alignés */
+    }
+
+    th {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+</style>
+
+<style>
+    .btn-action {
+        padding: .3rem .6rem;
+        background: #4c6fff;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-right: .4rem;
+        font-size: .9rem;
+    }
+
+    .btn-action:hover {
+        background: #3a56d4;
+    }
+
+    .btn-danger {
+        background: #e04545;
+    }
+
+    .btn-danger:hover {
+        background: #c73030;
+    }
+</style>
 
 <h1>Réservations</h1>
 
 <p><a href="{% url 'reservation_create' %}">+ Nouvelle réservation</a></p>
 
-<form method="get" action="{% url 'reservation_list' %}" style="margin-bottom:1rem; display:flex; gap:.5rem;">
+<form method="get" action="{% url 'reservation_list' %}"
+    style="margin-bottom:1rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
+
+    <!-- Recherche texte -->
     <input type="text" name="q" placeholder="Rechercher (nom, téléphone, email, commentaire, date, heure)"
         value="{{ q|default:'' }}" style="flex:1; padding:.5rem;" />
+
+    <!-- Filtres avancés -->
+    <input type="date" name="date_start" value="{{ date_start|default:'' }}" />
+    <input type="date" name="date_end" value="{{ date_end|default:'' }}" />
+    <input type="number" name="min_p" min="1" value="{{ min_p|default:'' }}" placeholder="Min pers."
+        style="width:7rem" />
+    <input type="number" name="max_p" min="1" value="{{ max_p|default:'' }}" placeholder="Max pers."
+        style="width:7rem" />
+
+    <!-- Conserver le tri courant -->
+    <input type="hidden" name="sort" value="{{ sort }}" />
+    <input type="hidden" name="dir" value="{{ dir }}" />
+
     <button type="submit" style="padding:.5rem 1rem;">Rechercher</button>
-    {% if q %}
+
+    {% if q or date_start or date_end or min_p or max_p %}
     <a href="{% url 'reservation_list' %}">Réinitialiser</a>
     {% endif %}
 </form>
+
 
 {% if messages %}
 <ul style="padding:0;">
@@ -21,7 +84,7 @@
         margin:.5rem 0;
         padding:.75rem;
         border-radius:8px;
-        background-color:{ % if message.tags == 'success' %}#eafbea{% elif message.tags == 'error' %}#fdecea{% else %}#f0f0f0{% endif %};
+        background-color:{% if message.tags == 'success' %}#eafbea{% elif message.tags == 'error' %}#fdecea{% else %}#f0f0f0{% endif %};
         border:1px solid {% if message.tags == 'success' %}#b7e4c7{% elif message.tags == 'error' %}#f5b5b5{% else %}#ddd{% endif %};
       ">
         {{ message }}
@@ -57,35 +120,35 @@
         <tr>
             <th>
                 <a
-                    href="?{% if q %}q={{ q }}&{% endif %}sort=date&dir={% if sort == 'date' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=date&dir={% if sort == 'date' and dir == 'asc' %}desc{% else %}asc{% endif %}">
                     Date {% if sort == 'date' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
             <th>
                 <a
-                    href="?{% if q %}q={{ q }}&{% endif %}sort=heure&dir={% if sort == 'heure' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=heure&dir={% if sort == 'heure' and dir == 'asc' %}desc{% else %}asc{% endif %}">
                     Heure {% if sort == 'heure' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
             <th>
                 <a
-                    href="?{% if q %}q={{ q }}&{% endif %}sort=client&dir={% if sort == 'client' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=client&dir={% if sort == 'client' and dir == 'asc' %}desc{% else %}asc{% endif %}">
                     Client {% if sort == 'client' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
             <th>
                 <a
-                    href="?{% if q %}q={{ q }}&{% endif %}sort=personnes&dir={% if sort == 'personnes' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=personnes&dir={% if sort == 'personnes' and dir == 'asc' %}desc{% else %}asc{% endif %}">
                     Personnes {% if sort == 'personnes' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
             <th>
                 <a
-                    href="?{% if q %}q={{ q }}&{% endif %}sort=tel&dir={% if sort == 'tel' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                    href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort=tel&dir={% if sort == 'tel' and dir == 'asc' %}desc{% else %}asc{% endif %}">
                     Téléphone {% if sort == 'tel' %}{% if dir == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
             </th>
-            <th>Actions</th>
+            <th style="text-align:center;">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -96,12 +159,11 @@
             <td>{{ r.nom_client }}</td>
             <td>{{ r.nombre_personnes }}</td>
             <td>{{ r.telephone }}</td>
-            <td>
-                <a href="{% url 'reservation_update' r.pk %}">Modifier</a>
-                ·
-                <a href="{% url 'reservation_delete' r.pk %}"
-                    onclick="return confirm('Voulez-vous vraiment supprimer cette réservation ?');">Supprimer</a>
+            <td style="text-align:center;">
+                <a href="{% url 'reservation_update' r.pk %}" class="btn-action">Modifier</a>
+                <a href="{% url 'reservation_delete' r.pk %}" class="btn-action btn-danger">Supprimer</a>
             </td>
+
         </tr>
         {% empty %}
         <tr>
@@ -113,19 +175,23 @@
 
 <nav style="margin-top:1rem; display:flex; gap:.5rem; align-items:center;">
     {% if page_obj.has_previous %}
-    <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page=1">« Première</a>
-    <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page={{ page_obj.previous_page_number }}">‹
+    <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page=1">« Première</a>
+    <a
+        href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page={{ page_obj.previous_page_number }}">‹
         Précédente</a>
     {% endif %}
 
     <span>Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
 
     {% if page_obj.has_next %}
-    <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page={{ page_obj.next_page_number }}">Suivante
+    <a
+        href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page={{ page_obj.next_page_number }}">Suivante
         ›</a>
-    <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page={{ page_obj.paginator.num_pages }}">Dernière
+    <a
+        href="?{% if q %}q={{ q|urlencode }}&{% endif %}sort={{ sort }}&dir={{ dir }}&page={{ page_obj.paginator.num_pages }}">Dernière
         »</a>
     {% endif %}
 </nav>
 
-<p><a href="{% url 'home' %}">Retour à l’accueil</a></p>
+<p><a href="{% url 'reservation_list' %}">Retour à l’accueil</a></p>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "reservations_app/base.html" %}
+
+{% block title %}Accueil – Réservations{% endblock %}
+
+{% block content %}
+<h2>Bienvenue 👋</h2>
+<p>
+    Ce petit site permet de gérer les réservations (création, modification,
+    suppression, recherche, filtres, tri…).
+</p>
+
+<p>
+    ➜ <a href="{% url 'reservation_list' %}">Voir la liste des réservations</a>
+</p>
+{% endblock %}

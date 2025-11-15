@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+{% if messages %}
+<div
+    style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:.6rem;border-radius:.5rem;margin-bottom:1rem">
+    {% for m in messages %}{{ m }}{% endfor %}
+</div>
+{% endif %}
+
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nouvelle réservation</title>
+    <style>
+        body {
+            font-family: system-ui, Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        form {
+
+            max-width: 540px;
+            display: grid;
+            gap: .8rem;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input,
+        textarea,
+        select {
+            padding: .6rem;
+            border: 1px solid #ccc;
+            border-radius: .4rem;
+            width: 100%;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: .7rem 1rem;
+            border-radius: .4rem;
+            cursor: pointer;
+        }
+
+        a {
+            color: #2563eb;
+            margin-left: .6rem;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>➕ Nouvelle réservation</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {{ form.as_p }}
+        <button type="submit">Enregistrer</button>
+        <a href="{% url 'reservation_list' %}">Annuler</a>
+    </form>
+</body>
+
+</html>

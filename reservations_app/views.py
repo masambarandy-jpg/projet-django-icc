@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from .models import Reservation
 from .forms import ReservationForm
+
 # … tes autres imports
 
 def reservation_list(request):

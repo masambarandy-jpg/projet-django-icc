@@ -55,8 +55,9 @@
     <h1>Supprimer la réservation</h1>
     <div class="danger">
         <p>Confirmer la suppression de la réservation de <strong>{{ reservation.nom_client }}</strong>
-            du <strong>{{ reservation.date_reservation }}</strong> à <strong>{{ reservation.heure_reservation|time:"H:i"
-                }}</strong> ?</p>
+            du <strong>{{ reservation.date_reservation }}</strong>
+            à <strong>{{ reservation.heure_reservation|time:"H:i" }}</strong> ?
+        </p>
     </div>
 
     <form method="post">

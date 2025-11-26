@@ -96,22 +96,44 @@ def reservation_create(request):
 
 def reservation_update(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
-    next_url = request.GET.get("next") or request.POST.get("next") or ""
 
+    # 1. On calcule l'URL de retour (liste avec filtres)
+    # Si un paramètre ?next=... est fourni, on le priorise
+    explicit_next = request.GET.get("next")
+
+    params = {
+        "q": request.GET.get("q", ""),
+        "date_start": request.GET.get("date_start", ""),
+        "date_end": request.GET.get("date_end", ""),
+        "min_p": request.GET.get("min_p", ""),
+        "max_p": request.GET.get("max_p", ""),
+        "sort": request.GET.get("sort", ""),
+        "dir": request.GET.get("dir", ""),
+        "page": request.GET.get("page", ""),
+    }
+    # On enlève les paramètres vides
+    params = {k: v for k, v in params.items() if v}
+
+    base_url = reverse("reservation_list")
+    filters_url = f"{base_url}?{urlencode(params)}" if params else base_url
+
+    next_url = explicit_next or filters_url
+
+    # 2. Gestion du formulaire
     if request.method == "POST":
         form = ReservationForm(request.POST, instance=reservation)
         if form.is_valid():
             form.save()
             messages.success(request, "Réservation modifiée avec succès.")
-            return redirect(next_url or "reservation_list")
+            return redirect(next_url)
     else:
         form = ReservationForm(instance=reservation)
 
-    return render(
-        request,
-        "reservations_app/reservation_form.html",
-        {"form": form, "mode": "update", "next": next_url},
-    )
+    return render(request, "reservations_app/reservation_form.html", {
+        "form": form,
+        "reservation": reservation,
+        "next": next_url,
+    })
 
 
 def reservation_delete(request, pk):

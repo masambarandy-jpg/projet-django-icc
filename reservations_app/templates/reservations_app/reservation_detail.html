@@ -1,18 +1,40 @@
 {% extends 'reservations_app/base.html' %}
 
 {% block content %}
-<h1>Détails de la réservation</h1>
+<h1>Détail de la réservation n° {{ reservation.id }}</h1>
 
-<p><strong>Client :</strong> {{ reservation.nom_client }}</p>
-<p><strong>Date :</strong> {{ reservation.date_reservation }}</p>
-<p><strong>Heure :</strong> {{ reservation.heure_reservation }}</p>
-<p><strong>Nombre de personnes :</strong> {{ reservation.nombre_personnes }}</p>
-<p><strong>Notes :</strong> {{ reservation.note }}</p>
+<p>
+    <strong>Client :</strong> {{ reservation.nom_client }}<br>
+    <strong>Email :</strong> {{ reservation.email|default:"(non renseigné)" }}<br>
+    <strong>Téléphone :</strong> {{ reservation.telephone|default:"(non renseigné)" }}
+</p>
 
-<br>
+<table class="table-detail">
+    <tr>
+        <th>Date</th>
+        <td>{{ reservation.date_reservation|date:"d/m/Y" }}</td>
+    </tr>
+    <tr>
+        <th>Heure</th>
+        <td>{{ reservation.heure_reservation|time:"H:i" }}</td>
+    </tr>
+    <tr>
+        <th>Nombre de personnes</th>
+        <td>{{ reservation.nb_personnes }}</td>
+    </tr>
+    <tr>
+        <th>Message / Remarques</th>
+        <td>{{ reservation.message|default:"(aucun)" }}</td>
+    </tr>
+</table>
 
-<a href="{% url 'reservation_update' reservation.pk %}">Modifier</a> |
-<a href="{% url 'reservation_delete' reservation.pk %}">Supprimer</a> |
-<a href="{% url 'reservation_list' %}">Retour à la liste</a>
+<nav style="margin-top: 1.5rem;">
+    <a href="{{ next_url }}" class="btn-action">← Retour à la liste</a>
+    <a href="{% url 'reservation_update' reservation.pk %}" class="btn-action">Modifier</a>
+    <a href="{% url 'reservation_delete' reservation.pk %}" class="btn-action btn-danger">
+        Supprimer
+    </a>
+</nav>
+
 
 {% endblock %}

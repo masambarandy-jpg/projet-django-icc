@@ -1,0 +1,18 @@
+{% extends 'reservations_app/base.html' %}
+
+{% block content %}
+<h1>Détails de la réservation</h1>
+
+<p><strong>Client :</strong> {{ reservation.nom_client }}</p>
+<p><strong>Date :</strong> {{ reservation.date_reservation }}</p>
+<p><strong>Heure :</strong> {{ reservation.heure_reservation }}</p>
+<p><strong>Nombre de personnes :</strong> {{ reservation.nombre_personnes }}</p>
+<p><strong>Notes :</strong> {{ reservation.note }}</p>
+
+<br>
+
+<a href="{% url 'reservation_update' reservation.pk %}">Modifier</a> |
+<a href="{% url 'reservation_delete' reservation.pk %}">Supprimer</a> |
+<a href="{% url 'reservation_list' %}">Retour à la liste</a>
+
+{% endblock %}

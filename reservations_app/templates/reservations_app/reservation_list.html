@@ -171,6 +171,7 @@
                 </a>
             </th>
             <th style="text-align:center;">Actions</th>
+
         </tr>
     </thead>
     <tbody>
@@ -201,6 +202,11 @@
                     class="btn-action btn-danger">
                     Supprimer
                 </a>
+                <a href="{% url 'reservation_detail' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
+                    class="btn-action">
+                    Voir
+                </a>
+
             </td>
         </tr>
         {% empty %}

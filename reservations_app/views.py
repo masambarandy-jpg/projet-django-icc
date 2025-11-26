@@ -128,3 +128,9 @@ def reservation_delete(request, pk):
         "reservations_app/confirm_delete.html",
         {"reservation": reservation, "next": next_url},
     )
+def reservation_detail(request, pk):
+    reservation = get_object_or_404(Reservation, pk=pk)
+    return render(request, 'reservations_app/reservation_detail.html', {
+        'reservation': reservation
+    })
+

@@ -128,9 +128,29 @@ def reservation_delete(request, pk):
         "reservations_app/confirm_delete.html",
         {"reservation": reservation, "next": next_url},
     )
+from django.urls import reverse
+from urllib.parse import urlencode
+
 def reservation_detail(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
+
+    params = {
+        "q": request.GET.get("q", ""),
+        "date_start": request.GET.get("date_start", ""),
+        "date_end": request.GET.get("date_end", ""),
+        "min_p": request.GET.get("min_p", ""),
+        "max_p": request.GET.get("max_p", ""),
+        "sort": request.GET.get("sort", ""),
+        "dir": request.GET.get("dir", ""),
+    }
+
+    params = {k: v for k, v in params.items() if v}
+
+    base_url = reverse("reservation_list")
+    next_url = f"{base_url}?{urlencode(params)}" if params else base_url
+
     return render(request, 'reservations_app/reservation_detail.html', {
-        'reservation': reservation
+        "reservation": reservation,
+        "next_url": next_url,
     })
 

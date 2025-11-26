@@ -194,6 +194,10 @@
 
             <!-- Actions (avec conservation des filtres) -->
             <td style="text-align:center;">
+                <a href="{% url 'reservation_detail' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
+                    class="btn-action">
+                    Voir
+                </a>
                 <a href="{% url 'reservation_update' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
                     class="btn-action">
                     Modifier
@@ -201,10 +205,6 @@
                 <a href="{% url 'reservation_delete' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
                     class="btn-action btn-danger">
                     Supprimer
-                </a>
-                <a href="{% url 'reservation_detail' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
-                    class="btn-action">
-                    Voir
                 </a>
 
             </td>

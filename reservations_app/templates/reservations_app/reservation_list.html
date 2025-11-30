@@ -85,10 +85,6 @@
 <p style="font-size: 0.9rem; color: #666; margin-top: 8px;">
     💡 Astuce : vous pouvez filtrer par nom, email, téléphone, dates et nombre de personnes.
 </p>
-
-
-
-
 {% if messages %}
 <ul style="padding:0;">
     {% for message in messages %}
@@ -194,18 +190,23 @@
 
             <!-- Actions (avec conservation des filtres) -->
             <td style="text-align:center;">
-                <a href="{% url 'reservation_detail' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
+                <a href="{% url 'reservation_detail' r.pk %}{% if query_string %}?{{ query_string }}{% endif %}"
                     class="btn-action">
                     Voir
                 </a>
-                <a href="{% url 'reservation_update' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
+
+                <a href="{% url 'reservation_update' r.pk %}{% if query_string %}?{{ query_string }}{% endif %}"
                     class="btn-action">
                     Modifier
                 </a>
-                <a href="{% url 'reservation_delete' r.pk %}?q={{ q }}&date_start={{ date_start }}&date_end={{ date_end }}&min_p={{ min_p }}&max_p={{ max_p }}&sort={{ sort }}&dir={{ dir }}"
-                    class="btn-action btn-danger">
+
+                <a href="{% url 'reservation_delete' r.pk %}{% if query_string %}?{{ query_string }}{% endif %}"
+                    class="btn-action">
                     Supprimer
                 </a>
+
+
+
 
             </td>
         </tr>
@@ -217,9 +218,6 @@
         </tr>
         {% endfor %}
     </tbody>
-
-
-
 </table>
 
 <nav style="margin-top:1rem; display:flex; gap:.5rem; align-items:center;">

@@ -2,9 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.urls import reverse
+from urllib.parse import urlencode
 
 from .models import Reservation
 from .forms import ReservationForm
+
 
 # … tes autres imports
 
@@ -57,7 +60,7 @@ def reservation_list(request):
     paginator = Paginator(reservations, 5)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-
+    query_string = request.GET.urlencode()
     # Rendu
     return render(
         request,
@@ -71,6 +74,7 @@ def reservation_list(request):
             "date_end": date_end,
             "min_p": min_p,
             "max_p": max_p,
+            "query_string": query_string,
         },
     )
 
@@ -150,8 +154,7 @@ def reservation_delete(request, pk):
         "reservations_app/confirm_delete.html",
         {"reservation": reservation, "next": next_url},
     )
-from django.urls import reverse
-from urllib.parse import urlencode
+
 
 def reservation_detail(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
@@ -164,14 +167,16 @@ def reservation_detail(request, pk):
         "max_p": request.GET.get("max_p", ""),
         "sort": request.GET.get("sort", ""),
         "dir": request.GET.get("dir", ""),
+        "page": request.GET.get("page", ""),  # 👈 on ajoute la page ici
     }
 
+    # On enlève les paramètres vides
     params = {k: v for k, v in params.items() if v}
 
-    base_url = reverse("reservation_list")
+    base_url = reverse("reservation_list")  # ou ton namespace si tu en utilises un
     next_url = f"{base_url}?{urlencode(params)}" if params else base_url
 
-    return render(request, 'reservations_app/reservation_detail.html', {
+    return render(request, "reservations_app/reservation_detail.html", {
         "reservation": reservation,
         "next_url": next_url,
     })

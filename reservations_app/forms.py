@@ -66,7 +66,6 @@ from .utils import is_time_within_opening
 
 
 class ReservationForm(forms.ModelForm):
-
     class Meta:
         model = Reservation
         fields = "__all__"
@@ -76,15 +75,45 @@ class ReservationForm(forms.ModelForm):
 
         date_reservation = cleaned_data.get("date_reservation")
         heure_reservation = cleaned_data.get("heure_reservation")
+        table = cleaned_data.get("table")  # peut être None si tu la laisses optionnelle
 
-        # Si un des deux est manquant, laisser les autres validations s’occuper
+        # Si un des champs est manquant, on laisse les autres validations gérer
         if not date_reservation or not heure_reservation:
             return cleaned_data
 
-        # Utiliser ta fonction utilitaire
+        # 1️⃣ Vérification des horaires d’ouverture (ce que tu avais déjà)
         if not is_time_within_opening(date_reservation, heure_reservation):
             raise ValidationError(
                 "Ce créneau n'est pas disponible : le salon est fermé ou hors horaires d'ouverture."
             )
 
+        # 2️⃣ Vérification des doublons de réservation
+        from .models import Reservation  # déjà importé en haut, mais au cas où
+
+        # On cherche les réservations qui ont :
+        # - même date
+        # - même heure
+        # - même table (ou aucune table si table est vide)
+        qs = Reservation.objects.filter(
+            date_reservation=date_reservation,
+            heure_reservation=heure_reservation,
+        )
+
+        if table:
+            qs = qs.filter(table=table)
+        else:
+            qs = qs.filter(table__isnull=True)
+
+        # Si on est en modification, on exclut la réservation actuelle
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.exists():
+            # Conflit détecté
+            raise ValidationError(
+                "Ce créneau est déjà réservé pour cette table. "
+                "Choisissez une autre table ou un autre horaire."
+            )
+
         return cleaned_data
+

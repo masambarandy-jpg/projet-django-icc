@@ -117,3 +117,34 @@ class ReservationForm(forms.ModelForm):
 
         return cleaned_data
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        date_reservation = cleaned_data.get("date_reservation")
+        heure_reservation = cleaned_data.get("heure_reservation")
+        table = cleaned_data.get("table")
+        nombre_personnes = cleaned_data.get("nombre_personnes")
+
+        # ⬇️ 1. Si date ou heure manquent : on laisse les autres validations gérer
+        if not date_reservation or not heure_reservation:
+            return cleaned_data
+
+        # 🔹 2. Vérification des horaires d'ouverture (déjà en place normalement)
+        # ... ton code actuel pour is_time_within_opening / jours spéciaux ...
+
+        # 🔹 3. Vérification des doublons (même table, même date, même heure)
+        # ... ton code actuel qui vérifie les réservations existantes ...
+
+        # 🔹 4. Vérification de la capacité de la table
+        if table and nombre_personnes:
+            if nombre_personnes > table.capacite:
+                # On attache l'erreur spécifiquement au champ "nombre_personnes"
+                raise ValidationError({
+                    "nombre_personnes": (
+                        f"Cette table ne peut accueillir que "
+                        f"{table.capacite} personnes au maximum."
+                    )
+                })
+
+        return cleaned_data
+

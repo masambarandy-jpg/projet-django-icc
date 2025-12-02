@@ -1,3 +1,6 @@
+from .utils import is_time_within_opening
+from django.core.exceptions import ValidationError
+
 from django import forms
 from .models import Reservation
 
@@ -55,3 +58,33 @@ class ReservationForm(forms.ModelForm):
                 }
             ),
         }
+from django import forms
+from django.core.exceptions import ValidationError
+
+from .models import Reservation
+from .utils import is_time_within_opening
+
+
+class ReservationForm(forms.ModelForm):
+
+    class Meta:
+        model = Reservation
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        date_reservation = cleaned_data.get("date_reservation")
+        heure_reservation = cleaned_data.get("heure_reservation")
+
+        # Si un des deux est manquant, laisser les autres validations s’occuper
+        if not date_reservation or not heure_reservation:
+            return cleaned_data
+
+        # Utiliser ta fonction utilitaire
+        if not is_time_within_opening(date_reservation, heure_reservation):
+            raise ValidationError(
+                "Ce créneau n'est pas disponible : le salon est fermé ou hors horaires d'ouverture."
+            )
+
+        return cleaned_data

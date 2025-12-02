@@ -10,6 +10,16 @@ class Reservation(models.Model):
     date_reservation = models.DateField(default=date.today)
     heure_reservation = models.TimeField(default=time(19, 0))  # 19:00 par défaut
     nombre_personnes = models.PositiveIntegerField(default=1)
+    
+    table = models.ForeignKey(
+        "Table",  # on référence le modèle Table par son nom
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="reservations",
+        verbose_name="Table (optionnel)",
+    )
+
 
     commentaire = models.TextField(blank=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
@@ -20,4 +30,37 @@ class Reservation(models.Model):
     def __str__(self):
         return f"{self.nom_client} – {self.date_reservation} {self.heure_reservation} ({self.nombre_personnes}p)"
 
+class Table(models.Model):
+    numero = models.CharField(max_length=10, unique=True)
+    capacite = models.PositiveIntegerField()
+    description = models.TextField(blank=True)
 
+    def __str__(self):
+        return f"Table {self.numero} ({self.capacite} pers.)"
+
+class OpeningHour(models.Model):
+    # 0 = lundi, 6 = dimanche
+    JOUR_SEMAINE = [
+        (0, "Lundi"),
+        (1, "Mardi"),
+        (2, "Mercredi"),
+        (3, "Jeudi"),
+        (4, "Vendredi"),
+        (5, "Samedi"),
+        (6, "Dimanche"),
+    ]
+
+    jour = models.IntegerField(choices=JOUR_SEMAINE)
+    heure_ouverture = models.TimeField()
+    heure_fermeture = models.TimeField()
+    is_closed = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["jour", "heure_ouverture"]
+        verbose_name = "Horaire d'ouverture"
+        verbose_name_plural = "Horaires d'ouverture"
+
+    def __str__(self):
+        if self.is_closed:
+            return f"{self.get_jour_display()} : fermé"
+        return f"{self.get_jour_display()} : {self.heure_ouverture.strftime('%H:%M')} → {self.heure_fermeture.strftime('%H:%M')}"

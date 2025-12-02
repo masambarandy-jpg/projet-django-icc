@@ -64,3 +64,37 @@ class OpeningHour(models.Model):
         if self.is_closed:
             return f"{self.get_jour_display()} : fermé"
         return f"{self.get_jour_display()} : {self.heure_ouverture.strftime('%H:%M')} → {self.heure_fermeture.strftime('%H:%M')}"
+class SpecialDay(models.Model):
+    date = models.DateField(unique=True)
+    label = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Ex : Jour férié, fermeture exceptionnelle, événement spécial…",
+    )
+    is_closed = models.BooleanField(
+        default=False,
+        help_text="Cochez si le salon est complètement fermé ce jour-là.",
+    )
+    heure_ouverture = models.TimeField(
+        null=True,
+        blank=True,
+        help_text="Laisser vide si fermé toute la journée.",
+    )
+    heure_fermeture = models.TimeField(
+        null=True,
+        blank=True,
+        help_text="Laisser vide si fermé toute la journée.",
+    )
+
+    class Meta:
+        ordering = ["date"]
+        verbose_name = "Jour spécial"
+        verbose_name_plural = "Jours spéciaux"
+
+    def __str__(self):
+        base = self.label or self.date.strftime("%d/%m/%Y")
+        if self.is_closed:
+            return f"{base} (fermé)"
+        if self.heure_ouverture and self.heure_fermeture:
+            return f"{base} ({self.heure_ouverture.strftime('%H:%M')} → {self.heure_fermeture.strftime('%H:%M')})"
+        return base

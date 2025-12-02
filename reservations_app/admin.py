@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Reservation
 from .models import Reservation, Table, OpeningHour
+from .models import Reservation, Table, OpeningHour, SpecialDay
+
 
 
 @admin.register(Reservation)
@@ -19,3 +21,9 @@ class TableAdmin(admin.ModelAdmin):
 class OpeningHourAdmin(admin.ModelAdmin):
     list_display = ("jour", "heure_ouverture", "heure_fermeture", "is_closed")
     list_filter = ("jour", "is_closed")
+@admin.register(SpecialDay)
+class SpecialDayAdmin(admin.ModelAdmin):
+    list_display = ("date", "label", "is_closed", "heure_ouverture", "heure_fermeture")
+    list_filter = ("is_closed",)
+    search_fields = ("label",)
+
